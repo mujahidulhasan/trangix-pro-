@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examination Information & Instructions</title>
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <style>
+        :root {
+            --primary: #DC2626;
+            --primary-hover: #B91C1C;
+            --bg-main: #F3F4F6;
+            --bg-card: #FFFFFF;
+            --text-main: #111827;
+            --text-muted: #4B5563;
+            --border-color: #D1D5DB;
+            --accent-success: #059669;
+            --accent-warning: #D97706;
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-family);
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            overflow-y: auto;
+            min-height: 100vh;
+        }
+
+        /* Header Component */
+        .app-header {
+            height: 80px;
+            background-color: #FFFFFF;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-logo-img {
+            height: 45px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .brand-text {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #1E293B;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .user-id {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-family: monospace;
+            margin-top: 2px;
+        }
+
+        .btn-header-action {
+            background: none;
+            border: 1px solid var(--border-color);
+            padding: 8px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 36px;
+        }
+
+        .btn-header-action:hover {
+            background-color: #F9FAFB;
+            border-color: #9CA3AF;
+        }
+
+        /* Developer Access Utility Control */
+        .dev-meta-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .btn-platform-meta {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid var(--border-color);
+            background-color: #FFFFFF;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+            padding: 0;
+        }
+
+        .btn-platform-meta:hover, .btn-platform-meta:focus {
+            background-color: #F8FAFC;
+            border-color: #9CA3AF;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            outline: none;
+        }
+
+        .btn-platform-meta:focus-visible {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.15);
+        }
+
+        .btn-platform-meta svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        /* Platform Tooltip Module */
+        .dev-meta-tooltip {
+            position: absolute;
+            bottom: -38px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #1E293B;
+            color: #FFFFFF;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 5px 10px;
+            border-radius: 4px;
+            white-space: nowrap;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 150ms ease;
+            z-index: 1100;
+            letter-spacing: 0.3px;
+        }
+
+        .dev-meta-wrapper:hover .dev-meta-tooltip,
+        .btn-platform-meta:focus .dev-meta-tooltip {
+            opacity: 1;
+        }
+
+        /* Error/Toast Feedback Panel Placeholder */
+        .feedback-toast-panel {
+            display: none;
+            position: fixed;
+            top: 95px;
+            right: 30px;
+            background-color: #FEF2F2;
+            border: 1px solid #FCA5A5;
+            padding: 14px 20px;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            z-index: 3000;
+            align-items: center;
+            gap: 12px;
+            color: #991B1B;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* Workspace Wrapper */
+        .instructions-workspace {
+            margin-top: 80px;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: calc(100vh - 80px);
+        }
+
+        .instructions-container {
+            width: 100%;
+            max-width: 1100px;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            padding: 40px;
+            display: none;
+        }
+
+        .content-header-block {
+            border-bottom: 2px solid var(--bg-main);
+            padding-bottom: 25px;
+            margin-bottom: 30px;
+        }
+
+        .exam-title-badge-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .exam-main-title {
+            font-size: 26px;
+            font-weight: 800;
+            color: #111827;
+            line-height: 1.3;
+        }
+
+        .badge-container {
+            width: 64px;
+            height: 64px;
+            background-color: #F3F4F6;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .badge-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .badge-fallback {
+            font-weight: 700;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .spec-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .spec-box {
+            background-color: #F9FAFB;
+            border: 1px solid var(--border-color);
+            padding: 15px 12px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .spec-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .spec-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-main);
+            white-space: nowrap;
+        }
+
+        .instruction-section-node {
+            margin-bottom: 35px;
+        }
+
+        .section-headline {
+            font-size: 14px;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: #1E293B;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+            border-left: 3px solid var(--primary);
+            padding-left: 10px;
+        }
+
+        .section-paragraph-content {
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-muted);
+        }
+
+        .tags-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding-top: 5px;
+        }
+
+        .skill-tag {
+            background-color: #E2E8F0;
+            color: #334155;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 5px 12px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+
+        .functional-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .functional-list-item {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .functional-list-item::before {
+            content: "•";
+            color: var(--text-muted);
+            font-weight: bold;
+        }
+
+        .env-requirement-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .env-requirement-card {
+            background-color: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .env-card-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        .env-card-value {
+            font-size: 14px;
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .critical-warning-box {
+            background-color: #FFFBEB;
+            border: 1px solid #FCD34D;
+            padding: 20px;
+            border-radius: 6px;
+        }
+
+        .warning-headline-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #92400E;
+            font-weight: 700;
+            font-size: 15px;
+            margin-bottom: 8px;
+        }
+
+        .warning-list {
+            list-style: none;
+        }
+
+        .warning-list-item {
+            font-size: 14px;
+            color: #78350F;
+            line-height: 1.5;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .warning-list-item::before {
+            content: "⚠️";
+            font-size: 12px;
+        }
+
+        .warning-list-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .acknowledgement-checkpoint-wrapper {
+            background-color: #F8FAFC;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 6px;
+            margin-top: 40px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .acknowledgement-checkpoint-wrapper input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+            cursor: pointer;
+            margin-top: 2px;
+        }
+
+        .checkbox-label-text {
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--text-main);
+            font-weight: 600;
+            user-select: none;
+        }
+
+        .action-control-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 2px solid var(--bg-main);
+            padding-top: 25px;
+        }
+
+        .btn-action-nav {
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 700;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 150ms ease, opacity 150ms ease;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .btn-nav-back {
+            background-color: #FFFFFF;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+        }
+
+        .btn-nav-back:hover {
+            background-color: #F3F4F6;
+            color: var(--text-main);
+        }
+
+        .btn-nav-submit {
+            background-color: var(--primary);
+            color: #FFFFFF;
+            width: 220px;
+        }
+
+        .btn-nav-submit:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-nav-submit:disabled {
+            background-color: #E5E7EB;
+            color: #9CA3AF;
+            cursor: not-allowed;
+        }
+
+        .state-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 80px 40px;
+            background-color: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        .state-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 15px;
+            margin-bottom: 8px;
+        }
+
+        .state-desc {
+            font-size: 14px;
+            color: var(--text-muted);
+            max-width: 400px;
+            line-height: 1.5;
+        }
+
+        .skeleton-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+            max-width: 1100px;
+            background-color: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 40px;
+        }
+
+        .skeleton-pulse {
+            animation: pulse 1.5s infinite ease-in-out;
+            background-color: #E5E7EB;
+            border-radius: 4px;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+
+        /* Developer Modal (Synced 100%) */
+        .dev-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(2px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .dev-modal-window {
+            background-color: #FFFFFF;
+            width: 450px;
+            border-radius: 6px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            animation: modalFadeIn 0.15s ease-out;
+            padding: 25px;
+        }
+
+        .dev-modal-profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 12px;
+        }
+
+        .dev-profile-img {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background-color: #E2E8F0;
+            object-fit: cover;
+            border: 2px solid var(--border-color);
+        }
+
+        .dev-profile-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .dev-profile-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+
+        .dev-links-grid {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .dev-link-item {
+            font-size: 13px;
+            color: #2563EB;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            background-color: #F8FAFC;
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #E2E8F0;
+        }
+
+        .dev-link-item:hover {
+            background-color: #F1F5F9;
+        }
+
+        .dev-link-label {
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        .btn-modal-cancel {
+            padding: 10px 20px;
+            font-size: 13px;
+            font-weight: 700;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            background-color: #FFFFFF;
+            color: var(--text-muted);
+        }
+
+        .btn-modal-cancel:hover {
+            background-color: #F3F4F6;
+        }
+
+        @media (max-width: 1023px) {
+            .spec-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+            .instructions-container { padding: 25px; }
+        }
+
+        @media (max-width: 640px) {
+            .app-header { padding: 0 15px; }
+            .brand-text, .user-info { display: none; }
+            .spec-grid { grid-template-columns: repeat(2, 1fr); }
+            .env-requirement-grid { grid-template-columns: 1fr; }
+            .action-control-bar { flex-direction: column-reverse; gap: 15px; }
+            .btn-action-nav { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="feedback-toast-panel" id="app-feedback-toast" role="alert">
+        <svg style="width:20px; height:20px; fill:currentColor;" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+        </svg>
+        <span id="toast-message-content">Error Message Holder</span>
+    </div>
+
+    <header class="app-header">
+        <div class="header-brand">
+            <img class="brand-logo-img" src="assets/logo.png" alt="DS System Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="brand-logo" style="display:none; width:45px; height:45px; background-color:var(--primary); color:white; align-items:center; justify-content:center; font-weight:900; font-size:22px; border-radius:4px;">DS</div>
+            <div class="brand-text">3DEXPERIENCE Certification Portal</div>
+        </div>
+        <div class="user-profile">
+            <div class="user-info">
+                <div class="user-name" id="user-display-name">---</div>
+                <div class="user-id" id="user-display-id">---</div>
+            </div>
+            
+            <div class="dev-meta-wrapper">
+                <button class="btn-platform-meta" 
+                        onclick="toggleDevModal(true)" 
+                        aria-label="Platform and Developer Metadata Information" 
+                        tabindex="0">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+                    </svg>
+                </button>
+                <span class="dev-meta-tooltip" role="tooltip">Platform & Developer Information</span>
+            </div>
+
+            <button class="btn-header-action" id="nav-logout-btn">Log Out</button>
+        </div>
+    </header>
+
+    <main class="instructions-workspace">
+        
+        <div id="instruction-loading" class="skeleton-wrapper">
+            <div class="skeleton-pulse" style="width: 60%; height: 32px; margin-bottom: 10px;"></div>
+            <div class="skeleton-pulse" style="width: 100%; height: 80px; margin-bottom: 20px;"></div>
+            <div class="skeleton-pulse" style="width: 40%; height: 24px; margin-bottom: 10px;"></div>
+            <div class="skeleton-pulse" style="width: 100%; height: 120px;"></div>
+        </div>
+
+        <div id="instruction-empty" class="state-container">
+            <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <div class="state-title">Examination information unavailable</div>
+            <div class="state-desc">The requested configuration parameters are missing or invalid inside the registry database.</div>
+        </div>
+
+        <div id="instruction-error" class="state-container">
+            <svg width="48" height="48" fill="none" stroke="#DC2626" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            <div class="state-title">Unable to load examination information</div>
+            <div class="state-desc">A critical timeout failure occurred during execution load.</div>
+            <button class="btn-header-action" style="margin-top: 15px; padding: 8px 16px; background-color: var(--primary); color: white; border: none;" onclick="loadTargetInstructionSchema();">Retry Execution</button>
+        </div>
+
+        <article class="instructions-container" id="instruction-main-content">
+            
+            <div class="content-header-block">
+                <div class="exam-title-badge-row">
+                    <h1 class="exam-main-title" id="db-exam-name">---</h1>
+                    <div class="badge-container" id="db-badge-frame"></div>
+                </div>
+
+                <div class="spec-grid">
+                    <div class="spec-box">
+                        <div class="spec-label">Duration</div>
+                        <div class="spec-value" id="db-spec-duration">---</div>
+                    </div>
+                    <div class="spec-box">
+                        <div class="spec-label">Evaluation Qs</div>
+                        <div class="spec-value" id="db-spec-questions">---</div>
+                    </div>
+                    <div class="spec-box">
+                        <div class="spec-label">Passing Score</div>
+                        <div class="spec-value" id="db-spec-passing">---</div>
+                    </div>
+                    <div class="spec-box">
+                        <div class="spec-label">Total Marks</div>
+                        <div class="spec-value" id="db-spec-marks">---</div>
+                    </div>
+                    <div class="spec-box">
+                        <div class="spec-label">Max Attempts</div>
+                        <div class="spec-value" id="db-spec-attempts">---</div>
+                    </div>
+                    <div class="spec-box">
+                        <div class="spec-label">Difficulty</div>
+                        <div class="spec-value" id="db-spec-level">---</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="instruction-section-node">
+                <h2 class="section-headline">Certification Description</h2>
+                <p class="section-paragraph-content" id="db-long-description">---</p>
+            </div>
+
+            <div class="instruction-section-node">
+                <h2 class="section-headline">Skills Measured</h2>
+                <div class="tags-wrapper" id="db-skills-target"></div>
+            </div>
+
+            <div class="instruction-section-node">
+                <h2 class="section-headline">Important Instructions</h2>
+                <ul class="functional-list" id="db-rules-target"></ul>
+            </div>
+
+            <div class="instruction-section-node">
+                <h2 class="section-headline">System Requirements</h2>
+                <div class="env-requirement-grid">
+                    <div class="env-requirement-card">
+                        <span class="env-card-title">Required CAD Subsystem</span>
+                        <span class="env-card-value" id="db-env-software">---</span>
+                    </div>
+                    <div class="env-requirement-card">
+                        <span class="env-card-title">Screen Resolution Threshold</span>
+                        <span class="env-card-value" id="db-env-resolution">---</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="critical-warning-box">
+                <div class="warning-headline-row">
+                    <span>EXAMINATION WARNINGS</span>
+                </div>
+                <ul class="warning-list" id="db-warnings-target"></ul>
+            </div>
+
+            <label class="acknowledgement-checkpoint-wrapper" for="candidate-ack-checkbox">
+                <input type="checkbox" id="candidate-ack-checkbox" onchange="toggleExecutionTrigger(this.checked)">
+                <span class="checkbox-label-text">I explicitly confirm that I have read, verified, and completely understood all industrial examination rules, environment compliance thresholds, and telemetry warning protocols listed above.</span>
+            </label>
+
+            <div class="action-control-bar">
+                <button class="btn-action-nav btn-nav-back" onclick="executeBackNavigationRoute()">Back To Exam Selection</button>
+                <button class="btn-action-nav btn-nav-submit" id="btn-submit-execution" disabled onclick="dispatchSessionProvisioningPipeline()">Start Examination</button>
+            </div>
+
+        </article>
+    </main>
+
+    <div class="dev-modal-overlay" id="developer-modal" role="dialog" aria-modal="true" onclick="toggleDevModal(false)">
+        <div class="dev-modal-window" onclick="event.stopPropagation()">
+            <div class="dev-modal-profile">
+                <img class="dev-profile-img" id="dev-fx-photo" src="" alt="Developer Profile">
+                <div class="dev-profile-name" id="dev-fx-name">---</div>
+                <div class="dev-profile-desc" id="dev-fx-desc">---</div>
+                
+                <div class="dev-links-grid">
+                    <a class="dev-link-item" id="dev-fx-web" href="#" target="_blank"><span class="dev-link-label">Website</span><span>Visit Platform</span></a>
+                    <a class="dev-link-item" id="dev-fx-github" href="#" target="_blank"><span class="dev-link-label">GitHub</span><span>Source Profiler</span></a>
+                    <a class="dev-link-item" id="dev-fx-facebook" href="#" target="_blank"><span class="dev-link-label">Facebook</span><span>Connect</span></a>
+                    <a class="dev-link-item" id="dev-fx-youtube" href="#" target="_blank"><span class="dev-link-label">YouTube</span><span>Channel Network</span></a>
+                    <a class="dev-link-item" id="dev-fx-email" href="#"><span class="dev-link-label">Email</span><span id="dev-fx-email-text">---</span></a>
+                </div>
+                
+                <button class="btn-modal-cancel" style="width:100%;" onclick="toggleDevModal(false)">Close Profile View</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Centralized Global Route Map Definitions (Fix 2: exam-selection.html Fix)
+        const AppRoutes = {
+            login: "login.html",
+            examSelection: "exam-selection.html", 
+            examSessionTarget: "exam-session.html",
+            sessionCreateAPI: "/api/exam-session/create"
+        };
+
+        // Database Ready Identity Mapping Structure (Fix 3: CurrentUser Object Architecture)
+        const CurrentUser = {
+            name: "Mujahid",
+            id: "ID: 2026-0619"
+        };
+
+        const AdminDeveloperSettings = {
+            "developer_name": "Mujahid",
+            "developer_photo": "https://avatars.githubusercontent.com/u/100000000?v=4",
+            "developer_description": "Enterprise Assessment Platform Systems Architect specializing in computer-aided manufacturing engineering frameworks and high-density dashboard matrix construction pipelines.",
+            "developer_website": "https://example.com",
+            "developer_github": "https://github",
+            "developer_facebook": "https://facebook.com",
+            "developer_youtube": "https://youtube.com",
+            "developer_email": "mujahid@example.com"
+        };
+
+        let internalDatabaseStorage = [];
+
+        const InstructionsAPIPipeline = {
+            fetchConfigurationBySlug: function(id) {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        const registry = {
+                            "cswa-design": {
+                                "name": "SOLIDWORKS Design Associate (CSWA)",
+                                "code": "CSWA",
+                                "level": "Beginner",
+                                "duration": 90,
+                                "questions": 14,
+                                "passing_score": "70%",
+                                "total_marks": 240,
+                                "max_attempts": 3,
+                                "icon_url": "",
+                                "description": "The Certified SOLIDWORKS Associate (CSWA) credential establishes core competency in mechanical design technologies, parametric part modeling, assembly logic structures, and engineering drawing standards aligned with global industrial manufacturing benchmarks.",
+                                "skills": ["Sketch Geometry", "Feature Operations", "Assembly Constraints", "Mass Properties", "Orthographic Projections"],
+                                "rules": [
+                                    "No pauses are permitted during the session window matrix loop.",
+                                    "The countdown clock initialization layer operates independently from loading buffers.",
+                                    "Navigating away from the isolated viewport tab records an immediate telemetry abort marker."
+                                ],
+                                "software": "SOLIDWORKS Professional 2019 or Higher",
+                                "resolution": "1920 x 1080 Optimal Configuration Layout",
+                                "warnings": [
+                                    "Ensure all background applications and heavy computational processes are completely closed before starting.",
+                                    "A failure of local client machines during a live test sequence cannot suspend remote cloud clocks.",
+                                    "Verify your network connection stability profile. Sessions cannot be recovered from server drops."
+                                ]
+                            }
+                        };
+                        resolve(registry[id] || null);
+                    }, 400);
+                });
+            },
+            provisionSessionToken: function(id) {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        resolve({ "success": true, "sessionId": "SEC-TOKEN-" + Math.random().toString(36).substr(2, 9).toUpperCase() });
+                    }, 400);
+                });
+            }
+        };
+
+        // Professional Feedback Overlay Subsystem (Fix 5: No Alert Native Injection)
+        function triggerApplicationFeedbackToast(messageContent) {
+            const toastFrame = document.getElementById('app-feedback-toast');
+            document.getElementById('toast-message-content').innerText = messageContent;
+            toastFrame.style.display = 'flex';
+            
+            setTimeout(() => {
+                toastFrame.style.display = 'none';
+            }, 4500);
+        }
+
+        function renderUserIdentityMatrix() {
+            document.getElementById('user-display-name').innerText = CurrentUser.name;
+            document.getElementById('user-display-id').innerText = CurrentUser.id;
+        }
+
+        function resetStateLayoutViewports() {
+            document.getElementById('instruction-loading').style.display = 'none';
+            document.getElementById('instruction-empty').style.display = 'none';
+            document.getElementById('instruction-error').style.display = 'none';
+            document.getElementById('instruction-main-content').style.display = 'none';
+        }
+
+        function fetchTargetUrlParameterToken() {
+            const queryMap = new URLSearchParams(window.location.search);
+            return queryMap.get('exam');
+        }
+
+        async function loadTargetInstructionSchema() {
+            resetStateLayoutViewports();
+            document.getElementById('instruction-loading').style.display = 'flex';
+
+            const tokenSlugId = fetchTargetUrlParameterToken();
+            if (!tokenSlugId) {
+                document.getElementById('instruction-loading').style.display = 'none';
+                document.getElementById('instruction-empty').style.display = 'flex';
+                return;
+            }
+
+            try {
+                const schemaPayload = await InstructionsAPIPipeline.fetchConfigurationBySlug(tokenSlugId);
+                document.getElementById('instruction-loading').style.display = 'none';
+
+                if (!schemaPayload) {
+                    document.getElementById('instruction-empty').style.display = 'flex';
+                    return;
+                }
+
+                populateDOMStructureDataNodes(schemaPayload);
+            } catch (error) {
+                document.getElementById('instruction-loading').style.display = 'none';
+                document.getElementById('instruction-error').style.display = 'flex';
+            }
+        }
+
+        function populateDOMStructureDataNodes(data) {
+            document.getElementById('db-exam-name').innerText = data.name;
+            document.getElementById('db-spec-duration').innerText = `${data.duration}m`;
+            document.getElementById('db-spec-questions').innerText = data.questions;
+            document.getElementById('db-spec-passing').innerText = data.passing_score;
+            document.getElementById('db-spec-marks').innerText = data.total_marks;
+            document.getElementById('db-spec-attempts').innerText = data.max_attempts;
+            document.getElementById('db-spec-level').innerText = data.level;
+            document.getElementById('db-long-description').innerText = data.description;
+            document.getElementById('db-env-software').innerText = data.software;
+            document.getElementById('db-env-resolution').innerText = data.resolution;
+
+            const badgeBox = document.getElementById('db-badge-frame');
+            badgeBox.innerHTML = data.icon_url 
+                ? `<img src="${data.icon_url}" alt="Branding Badge">` 
+                : `<div class="badge-fallback">${data.code}</div>`;
+
+            const skillBox = document.getElementById('db-skills-target');
+            skillBox.innerHTML = '';
+            data.skills.forEach(skill => {
+                const node = document.createElement('span');
+                node.className = 'skill-tag';
+                node.innerText = skill;
+                skillBox.appendChild(node);
+            });
+
+            const ruleBox = document.getElementById('db-rules-target');
+            ruleBox.innerHTML = '';
+            data.rules.forEach(rule => {
+                const li = document.createElement('li');
+                li.className = 'functional-list-item';
+                li.innerText = rule;
+                ruleBox.appendChild(li);
+            });
+
+            const warningBox = document.getElementById('db-warnings-target');
+            warningBox.innerHTML = '';
+            data.warnings.forEach(warn => {
+                const li = document.createElement('li');
+                li.className = 'warning-list-item';
+                li.innerText = warn;
+                warningBox.appendChild(li);
+            });
+
+            document.getElementById('instruction-main-content').style.display = 'block';
+        }
+
+        function toggleExecutionTrigger(stateChecked) {
+            document.getElementById('btn-submit-execution').disabled = !stateChecked;
+        }
+
+        function executeBackNavigationRoute() {
+            window.location.href = AppRoutes.examSelection;
+        }
+
+        async function dispatchSessionProvisioningPipeline() {
+            const tokenSlugId = fetchTargetUrlParameterToken();
+            const executionBtn = document.getElementById('btn-submit-execution');
+            
+            executionBtn.innerText = "Deploying Session Token...";
+            executionBtn.disabled = true;
+
+            try {
+                const responseReceipt = await InstructionsAPIPipeline.provisionSessionToken(tokenSlugId);
+                if (responseReceipt.success) {
+                    const destinationSessionRoute = `${AppRoutes.examSessionTarget}?session=${responseReceipt.sessionId}`;
+                    window.location.href = destinationSessionRoute;
+                }
+            } catch (error) {
+                // Modified to use toast placeholder platform module component instead of native blocking alert
+                triggerApplicationFeedbackToast("Critical System Framework Token Handshake Exception.");
+                executionBtn.innerText = "Start Examination";
+                executionBtn.disabled = false;
+            }
+        }
+
+        function toggleDevModal(status) {
+            const modal = document.getElementById('developer-modal');
+            if (status) {
+                document.getElementById('dev-fx-photo').src = AdminDeveloperSettings.developer_photo;
+                document.getElementById('dev-fx-name').innerText = AdminDeveloperSettings.developer_name;
+                document.getElementById('dev-fx-desc').innerText = AdminDeveloperSettings.developer_description;
+                document.getElementById('dev-fx-web').href = AdminDeveloperSettings.developer_website;
+                document.getElementById('dev-fx-github').href = AdminDeveloperSettings.developer_github;
+                document.getElementById('dev-fx-facebook').href = AdminDeveloperSettings.developer_facebook;
+                document.getElementById('dev-fx-youtube').href = AdminDeveloperSettings.developer_youtube;
+                document.getElementById('dev-fx-email').href = `mailto:${AdminDeveloperSettings.developer_email}`;
+                document.getElementById('dev-fx-email-text').innerText = AdminDeveloperSettings.developer_email;
+                modal.style.display = 'flex';
+            } else {
+                modal.style.display = 'none';
+            }
+        }
+
+        document.getElementById('nav-logout-btn').onclick = function() {
+            window.location.href = AppRoutes.login;
+        };
+
+        document.addEventListener("DOMContentLoaded", () => {
+            renderUserIdentityMatrix();
+            loadTargetInstructionSchema();
+        });
+    </script>
+</body>
+</html>
